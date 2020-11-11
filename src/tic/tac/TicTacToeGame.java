@@ -86,17 +86,17 @@ public class TicTacToeGame
 			isPlayer1Turn = !isPlayer1Turn;
 
 			// check for game end states
-			if (checkWin(PLAYER1))
+			if (GameUtil.hasWon(gameBoard, PLAYER1))
 			{
 				// player 1 won
 				return new MatchResult(player1, player2, player1, player2, false, getBoard());
 			}
-			else if (checkWin(PLAYER2))
+			else if (GameUtil.hasWon(gameBoard, PLAYER2))
 			{
 				// player 2 won
 				return new MatchResult(player1, player2, player2, player1, false, getBoard());
 			}
-			else if (!checkEmptySpaces())
+			else if (!GameUtil.hasEmptySpaces(gameBoard, BLANK))
 			{
 				// no empty spaces are left, but no player won. This is a draw
 				return new MatchResult(player1, player2, null, null, true, getBoard());
@@ -118,73 +118,6 @@ public class TicTacToeGame
 	public Random random()
 	{
 		return rng;
-	}
-
-	/**
-	 * check if the player p (X or O) has won
-	 * @param p the player to check for
-	 * @return is this player in a winning situation
-	 */
-	private boolean checkWin(char p)
-	{
-		/*
-		 * a | b | c
-		 * d | e | f
-		 * g | h | i
-		 * 
-		 * winning situations are:
-		 * (horizontal)
-		 * - abc
-		 * - def
-		 * - ghi
-		 * (vertical)
-		 * - adg
-		 * - beh
-		 * - cfi
-		 * (diagonal)
-		 * - aei
-		 * - ceg
-		 */
-		return checkL(p, 0, 0, 1, 0, 2, 0) // abc
-				|| checkL(p, 0, 1, 1, 1, 2, 1) // def
-				|| checkL(p, 0, 2, 1, 2, 2, 2) // ghi
-				|| checkL(p, 0, 0, 0, 1, 0, 2) // adg
-				|| checkL(p, 1, 0, 1, 1, 1, 2) // beh
-				|| checkL(p, 2, 0, 2, 1, 2, 2) // cfi
-				|| checkL(p, 0, 0, 1, 1, 2, 2) // aei
-				|| checkL(p, 2, 0, 1, 1, 0, 2);// ceg
-	}
-
-	/**
-	 * check tree positions of the game board for the given character c
-	 * @param c the character to check for
-	 * @param ax first x position
-	 * @param ay first y position
-	 * @param bx second x position
-	 * @param by second y position
-	 * @param cx third x position
-	 * @param cy third y position
-	 * @return are all three positions equal to c?
-	 */
-	private boolean checkL(char c, int ax, int ay, int bx, int by, int cx, int cy)
-	{
-		return gameBoard != null
-				&& gameBoard[ax][ay] == c
-				&& gameBoard[bx][by] == c
-				&& gameBoard[cx][cy] == c;
-	}
-
-	/**
-	 * check if there are any empty spaces left
-	 * @return are there any empty spaces left?
-	 */
-	private boolean checkEmptySpaces()
-	{
-		for (int x = 0; x < 3; x++)
-			for (int y = 0; y < 3; y++)
-				if (gameBoard[x][y] == BLANK)
-					return true;
-		return false;
 	}
 
 	/**
