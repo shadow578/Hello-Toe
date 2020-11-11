@@ -8,6 +8,9 @@ import tic.tac.toe.Position;
 import tic.tac.toe.Symbols;
 import tic.util.ConsoleUtil;
 
+/**
+ * A Interactive Player - meaning the bot is you, the player. I/O using the console
+ */
 public class InteractivePlayer extends Player
 {
 	/**

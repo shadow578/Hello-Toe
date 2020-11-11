@@ -109,7 +109,7 @@ public class TicTacToeGame
 	 */
 	public char[][] getBoard()
 	{
-		return gameBoard.clone();
+		return GameUtil.copyBoard(gameBoard);
 	}
 
 	/**

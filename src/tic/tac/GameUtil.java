@@ -90,4 +90,26 @@ public class GameUtil
 		return false;
 	}
 
+	/**
+	 * create a exact copy of the given board
+	 * @param board the board to copy
+	 * @return the copy of the board
+	 */
+	public static char[][] copyBoard(char[][] board)
+	{
+		// check board is 3x3
+		if (board.length < 3
+				|| board[0].length < 3
+				|| board[1].length < 3
+				|| board[2].length < 3)
+			throw new InvalidParameterException("board has to be 3x3");
+		
+		//create new board
+		char[][] copy = new char[3][3];
+		for(int x = 0; x < 3; x++)
+			for(int y = 0; y < 3; y++)
+				copy[x][y] = board[x][y];
+		
+		return copy;
+	}
 }

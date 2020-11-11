@@ -6,6 +6,11 @@ import tic.tac.Player;
 import tic.tac.toe.Position;
 import tic.tac.toe.Symbols;
 
+/**
+ * Meet Dummy, the most inteligent bot on earth - not
+ * 
+ * Dummy uses the {@code Random} passed to {@code Player.act} to choose a random, blank position to take.
+ */
 public class DummyBot extends Player
 {
 	@Override

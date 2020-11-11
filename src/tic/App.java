@@ -2,6 +2,7 @@ package tic;
 
 import tic.players.DummyBot;
 import tic.players.InteractivePlayer;
+import tic.players.MaxBot;
 import tic.tac.Player;
 import tic.tac.TicTacToeGame;
 import tic.tac.toe.MatchResult;
@@ -15,12 +16,20 @@ public class App
 	 */
 	public static void main(String[] args)
 	{
-		// create new game and player instance instance
+		// create new game and player instances
 		TicTacToeGame game = new TicTacToeGame();
 		InteractivePlayer player = new InteractivePlayer();
+		DummyBot dummy = new DummyBot();
+		MaxBot max = new MaxBot();
 		
-		// dummy vs player
-		match(game, player, new DummyBot());
+		// player vs dummy
+		//match(game, player, dummy);
+		
+		// player vs max
+		match(game, player, max);
+		
+		// dummy vs max
+		match(game, dummy, max);
 	}
 	
 	/**
@@ -32,7 +41,7 @@ public class App
 	private static void match(TicTacToeGame game, Player p1, Player p2)
 	{
 		System.out.printf("%s vs %s%n", p1.getDisplayName(), p2.getDisplayName());
-		MatchResult result = game.match(new InteractivePlayer(), new DummyBot());
+		MatchResult result = game.match(p1, p2);
 		printResult(result);
 	}
 	
