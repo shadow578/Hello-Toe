@@ -21,17 +21,38 @@ public class App
 		InteractivePlayer player = new InteractivePlayer();
 		DummyBot dummy = new DummyBot();
 		MaxBot max = new MaxBot();
-		
+
 		// player vs dummy
-		//match(game, player, dummy);
-		
+		// match(game, player, dummy);
+
 		// player vs max
-		match(game, player, max);
-		
+		//match(game, player, max);
+
 		// dummy vs max
-		//match(game, dummy, max);
+		// match(game, dummy, max);
+		
+		// max vs max
+		MaxBot max2 = new MaxBot();
+		int winsMax1 = 0, winsMax2 = 0, draws = 0;
+		for (int i = 0; i < 1000; i++)
+		{
+			System.out.println(i);
+			MatchResult r = game.match(max, max2);
+			if (r.wasDraw)
+				draws++;
+			else if (r.winner.equals(max))
+				winsMax1++;
+			else
+				winsMax2++;
+		}
+		
+		System.out.printf("Max 1 won %d times%nMax 2 won %d times%n%d Ties%nWin Ratio %.2f (should close to 50%%)%n",
+				winsMax1,
+				winsMax2,
+				draws,
+				(double) winsMax1 / (double) winsMax2);
 	}
-	
+
 	/**
 	 * match to players in a game of tic tac toe
 	 * @param game the game instance to use
@@ -44,7 +65,7 @@ public class App
 		MatchResult result = game.match(p1, p2);
 		printResult(result);
 	}
-	
+
 	/**
 	 * print the result of a match to sysout
 	 * @param result the result to print

@@ -1,66 +1,62 @@
 package tic.players;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Random;
 
-import tic.tac.GameUtil;
 import tic.tac.Player;
+import tic.tac.toe.Board;
 import tic.tac.toe.Position;
 import tic.tac.toe.Symbols;
 
 /**
- * TODO add high IQ description
+ * Get to know Max - the biggest 
+ * in the tic-tac-toe world (although he is a bit short): 
  * 
+ * Even when max was little, he was encouraged to always act 
+ * intelligently and with foresight. 
+ * This made him not only very unpopular among his peers, but also a bad loser.
+ * When he lost a game of tic-tac-toe against his father at a young age, he vowed 
+ * never to lose another game. This still holds true today, making 
+ * him one of the most feared opponents.
+ * 
+ * Fun Fact: 
+ * Because he is so short, his friends (if he had any) call him Mini-Max.
+ * 
+ * TL;DR:
  * a bot that uses minimax algorithm to always win
  */
 public class MaxBot extends Player
 {
-	class ScoredPosition
-	{
-		public final Position pos;
-		
-		public final double score;
-		
-		public ScoredPosition(double s, int x, int y)
-		{
-			pos = new Position(x, y);
-			score = s;
-		}
-	}
-	
 	@Override
-	public Position act(char[][] board, Symbols symbols, Random random)
-	{		
-		//test all possible moves using minimax
-		ArrayList<ScoredPosition> moves = new ArrayList<ScoredPosition>();
-		for (int x = 0; x < board.length; x++)
-			for (int y = 0; y < board[x].length; y++)
-				if (board[x][y] == symbols.BLANK)
+	public Position act(Board board, Symbols symbols, Random random)
+	{
+		// test all possible moves using minimax
+		Position best = null;
+		double bestScore = -10000;
+		for (int x = 0; x < 3; x++)
+			for (int y = 0; y < 3; y++)
+				if (board.get(x, y) == symbols.BLANK)
 				{
 					// this is a blank position, add a copy of the board with that position set to p
-					char[][] mov = GameUtil.copyBoard(board);
-					mov[x][y] = symbols.SELF;
-					
-					//calculate score for move and add to list
-					double score = miniMax(mov, symbols, 0, true);
-					moves.add(new ScoredPosition(score, x, y));
+					Board mov = board.clone();
+					mov.set(x, y, symbols.SELF);
+
+					// calculate score for move and add to list
+					double score = miniMax(mov, symbols, 0, false);
+
+					// check if score is higher than current best
+					if (score > bestScore)
+					{
+						// System.out.printf("update best move to (%d;%d) score %.2f%n", x, y, score);
+						bestScore = score;
+						best = new Position(x, y);
+					}
 				}
-		
-		//find move that scored highest
-		moves.sort(new Comparator<ScoredPosition>()
-		{
-			@Override
-			public int compare(ScoredPosition a, ScoredPosition b)
-			{
-				return Double.compare(a.score, b.score);
-			}
-		});
-		
-		//take the first move
-		ScoredPosition m = moves.get(0);
-		System.out.printf("taking move x= %d y= %d with score %f", m.pos.x, m.pos.y, m.score);
-		return m.pos;
+
+		// take the best move
+		// System.out.printf("taking move (%d;%d) with score %.2f%n", best.x, best.y,
+		// bestScore);
+		return best;
 	}
 
 	/**
@@ -72,19 +68,19 @@ public class MaxBot extends Player
 	 * @param isMaximizer are we in the maximizer role? (internal, set to true unless you want to loose)
 	 * @return the final best score
 	 */
-	double miniMax(char[][] board, Symbols sym, int currentMove, boolean isMaximizer)
+	double miniMax(Board board, Symbols sym, int currentMove, boolean isMaximizer)
 	{
-		// check for board terminal state (= no moves left)
-		if (!GameUtil.hasEmptySpaces(board, sym.BLANK))
+		// check for board terminal state
+		if (isBoardTerminalState(board, sym))
 			return getScoreForBoard(board, sym, currentMove);
-		
+
 		double bestValue;
 		if (isMaximizer)
 		{
 			// maximizer tries to find the highest score
 			// (we play PERFECT, so we take the path of the highest score)
-			bestValue = Double.MIN_VALUE;
-			for (char[][] move : getAllMoves(board, sym.BLANK, sym.SELF))
+			bestValue = -10000;
+			for (Board move : getAllMoves(board, sym.BLANK, sym.SELF))
 				bestValue = Math.max(bestValue, miniMax(move, sym, currentMove + 1, false));
 		}
 		else
@@ -92,10 +88,11 @@ public class MaxBot extends Player
 			// minimizer tries to find the smallest score
 			// (opponent is assumed to play PERFECT, so it takes the path where we get the
 			// lowest score; worst- case for us)
-			bestValue = Double.MAX_VALUE;
-			for (char[][] move : getAllMoves(board, sym.BLANK, sym.SELF))
+			bestValue = 10000;
+			for (Board move : getAllMoves(board, sym.BLANK, sym.OPPONENT))
 				bestValue = Math.min(bestValue, miniMax(move, sym, currentMove + 1, true));
 		}
+
 		return bestValue;
 	}
 
@@ -107,22 +104,22 @@ public class MaxBot extends Player
 	 * @param p the player char to insert
 	 * @return
 	 */
-	ArrayList<char[][]> getAllMoves(char[][] baseBoard, char blank, char p)
+	ArrayList<Board> getAllMoves(Board baseBoard, char blank, char p)
 	{
 		// enumerate all positions, place p in every blank spot
-		ArrayList<char[][]> boards = new ArrayList<char[][]>();
-		for (int x = 0; x < baseBoard.length; x++)
-			for (int y = 0; y < baseBoard[x].length; y++)
-				if (baseBoard[x][y] == blank)
+		ArrayList<Board> moves = new ArrayList<Board>();
+		for (int x = 0; x < 3; x++)
+			for (int y = 0; y < 3; y++)
+				if (baseBoard.get(x, y) == blank)
 				{
 					// this is a blank position, add a copy of the board with that position set to p
-					char[][] board = GameUtil.copyBoard(baseBoard);
-					board[x][y] = p;
-					boards.add(board);
+					Board mov = baseBoard.clone();
+					mov.set(x, y, p);
+					moves.add(mov);
 				}
 
 		// return all possible boards
-		return boards;
+		return moves;
 	}
 
 	/**
@@ -134,19 +131,37 @@ public class MaxBot extends Player
 	 * @param moves how many moves did it take to get to this board?
 	 * @return the score for this board
 	 */
-	double getScoreForBoard(char[][] board, Symbols sym, int moves)
+	double getScoreForBoard(Board board, Symbols sym, int moves)
 	{
-		if (GameUtil.hasWon(board, sym.SELF))
-			return 10 - moves;
-		else if (GameUtil.hasWon(board, sym.OPPONENT))
-			return -10 + moves;
+		if (board.checkWin(sym.SELF))
+			return 100 - moves;
+		else if (board.checkWin(sym.OPPONENT))
+			return -100 + moves;
 		else
 			return 0;
+	}
+
+	/**
+	 * check if the board is in a terminal (= game over) state
+	 * A Terminal state can be either:
+	 * - a win for the bot
+	 * - a win for the opponent
+	 * - a tie (no moves left)
+	 * 
+	 * @param board the board to check
+	 * @param sym the symbols to use for the board
+	 * @return is the board in a terminal state?
+	 */
+	boolean isBoardTerminalState(Board board, Symbols sym)
+	{
+		return !board.hasAnyEmptySpace(sym.BLANK) // no empty spaces (tie)
+				|| board.checkWin(sym.SELF) // SELF won
+				|| board.checkWin(sym.OPPONENT); // OPPONENT won
 	}
 
 	@Override
 	public String getDisplayName()
 	{
-		return "Max";
+		return "Mini-Max";
 	}
 }

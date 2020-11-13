@@ -61,7 +61,7 @@ public class TicTacToeGame
 			Position p = null;
 			do
 			{
-				System.out.printf("player %d's move%n", isPlayer1Turn ? 1 : 2);
+				//System.out.printf("player %d's move%n", isPlayer1Turn ? 1 : 2);
 				p = (isPlayer1Turn ? player1 : player2).act(board.clone(), sym, random());
 			} while (p == null // cannot be null
 					|| p.x < 0 || p.x > 2 // x in range 0 - 2
