@@ -3,6 +3,7 @@ package tic.players;
 import java.util.Random;
 
 import tic.tac.Player;
+import tic.tac.toe.Board;
 import tic.tac.toe.Position;
 import tic.tac.toe.Symbols;
 
@@ -14,7 +15,7 @@ import tic.tac.toe.Symbols;
 public class DummyBot extends Player
 {
 	@Override
-	public Position act(char[][] board, Symbols sym, Random random)
+	public Position act(Board board, Symbols sym, Random random)
 	{
 		// find a random space that is still blank, 1000 tries
 		for(int t = 0; t < 1000; t++)
@@ -25,14 +26,14 @@ public class DummyBot extends Player
 					y = random.nextInt(3);
 
 			// check that position is blank
-			if (board[y][x] == sym.BLANK)
+			if (board.get(x, y) == sym.BLANK)
 				return new Position(x, y);
 		}
 		
 		//fallback: get the first possible location
-		for(int x = 0; x < board.length; x++)
-			for(int y = 0; y < board[x].length; y++)
-				if(board[x][y] == sym.BLANK)
+		for(int x = 0; x < 3; x++)
+			for(int y = 0; y < 3; y++)
+				if(board.get(x, y) == sym.BLANK)
 					return new Position(x, y);
 		return null;
 	}

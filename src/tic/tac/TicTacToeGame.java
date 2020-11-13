@@ -2,6 +2,7 @@ package tic.tac;
 
 import java.util.Random;
 
+import tic.tac.toe.Board;
 import tic.tac.toe.MatchResult;
 import tic.tac.toe.Position;
 import tic.tac.toe.Symbols;
@@ -29,19 +30,6 @@ public class TicTacToeGame
 	private Random rng = new Random();
 
 	/**
-	 * the game board, size 3x3
-	 * 
-	 * 0,0 | 1,0 | 2,0
-	 * 0,1 | 1,1 | 2,1
-	 * 0,2 | 1,2 | 2,2
-	 * 
-	 * X is Player 1,
-	 * O is Player 2,
-	 * SPACE is empty
-	 */
-	private char[][] gameBoard;
-
-	/**
 	 * match two players against each other
 	 * @param player1 the first player
 	 * @param player2 the second player
@@ -57,10 +45,10 @@ public class TicTacToeGame
 		player1.init();
 		player2.init();
 
-		// init board
-		resetBoard();
+		// init and reset board
+		Board board = new Board(BLANK);
 
-		// randomize what player starts
+		// randomize which player starts
 		boolean isPlayer1Turn = random().nextBoolean();
 
 		// play games until one player wins
@@ -73,43 +61,36 @@ public class TicTacToeGame
 			Position p = null;
 			do
 			{
-				p = (isPlayer1Turn ? player1 : player2).act(getBoard(), sym, random());
+				System.out.printf("player %d's move%n", isPlayer1Turn ? 1 : 2);
+				p = (isPlayer1Turn ? player1 : player2).act(board.clone(), sym, random());
 			} while (p == null // cannot be null
 					|| p.x < 0 || p.x > 2 // x in range 0 - 2
 					|| p.y < 0 || p.y > 2 // y in range 0 - 2
-					|| gameBoard[p.y][p.x] != BLANK); // has to be BLANK space
+					|| board.get(p.x, p.y) != BLANK); // has to be BLANK space
 
 			// claim the space selected
-			gameBoard[p.y][p.x] = isPlayer1Turn ? PLAYER1 : PLAYER2;
+			board.set(p.x, p.y, isPlayer1Turn ? PLAYER1 : PLAYER2);
 
 			// switch player turns
 			isPlayer1Turn = !isPlayer1Turn;
 
 			// check for game end states
-			if (GameUtil.hasWon(gameBoard, PLAYER1))
+			if (board.checkWin(PLAYER1))
 			{
 				// player 1 won
-				return new MatchResult(player1, player2, player1, player2, false, getBoard());
+				return new MatchResult(player1, player2, player1, player2, false, board);
 			}
-			else if (GameUtil.hasWon(gameBoard, PLAYER2))
+			else if (board.checkWin(PLAYER2))
 			{
 				// player 2 won
-				return new MatchResult(player1, player2, player2, player1, false, getBoard());
+				return new MatchResult(player1, player2, player2, player1, false, board);
 			}
-			else if (!GameUtil.hasEmptySpaces(gameBoard, BLANK))
+			else if (!board.hasAnyEmptySpace(BLANK))
 			{
 				// no empty spaces are left, but no player won. This is a draw
-				return new MatchResult(player1, player2, null, null, true, getBoard());
+				return new MatchResult(player1, player2, null, null, true, board);
 			}
 		} while (true);
-	}
-
-	/**
-	 * @return a clone of the internal game board. modifying this does nothing, so dont try it ;)
-	 */
-	public char[][] getBoard()
-	{
-		return GameUtil.copyBoard(gameBoard);
 	}
 
 	/**
@@ -118,19 +99,5 @@ public class TicTacToeGame
 	public Random random()
 	{
 		return rng;
-	}
-
-	/**
-	 * reset the game board to all empty spaces
-	 */
-	private void resetBoard()
-	{
-		// init array
-		gameBoard = new char[3][3];
-
-		// set all cells to empty
-		for (int x = 0; x < 3; x++)
-			for (int y = 0; y < 3; y++)
-				gameBoard[x][y] = BLANK;
 	}
 }

@@ -29,7 +29,7 @@ public class App
 		match(game, player, max);
 		
 		// dummy vs max
-		match(game, dummy, max);
+		//match(game, dummy, max);
 	}
 	
 	/**

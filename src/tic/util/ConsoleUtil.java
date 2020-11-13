@@ -1,5 +1,7 @@
 package tic.util;
 
+import tic.tac.toe.Board;
+
 public class ConsoleUtil
 {
 	/**
@@ -15,16 +17,16 @@ public class ConsoleUtil
 	 * draw a tic tac toe board to the console using System.out
 	 * @param board the board to draw
 	 */
-	public static void DrawGameBoard(char[][] board)
+	public static void DrawGameBoard(Board board)
 	{
-		for (int x = 0; x < board.length; x++)
+		for (int x = 0; x < 3; x++)
 		{
-			for (int y = 0; y < board[x].length; y++)
+			for (int y = 0; y < 3; y++)
 			{
 				// only draw a pipe if not the last collumn
-				boolean drawPipe = y < (board[x].length - 1);
+				boolean drawPipe = y < 2;
 
-				String draw = " " + board[x][y];
+				String draw = " " + board.get(x, y);
 
 				if (drawPipe)
 					draw += " |";
@@ -35,7 +37,7 @@ public class ConsoleUtil
 
 			System.out.println();
 
-			if (x < (board.length - 1))
+			if (x < 2)
 				System.out.println("-----------");
 		}
 	}

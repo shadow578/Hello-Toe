@@ -24,7 +24,7 @@ public class MatchResult
 	/**
 	 * the final game board
 	 */
-	public final char[][] finalBoard;
+	public final Board finalBoard;
 
 	/**
 	 * initialize a new result with the given winner, looser and final board
@@ -32,7 +32,7 @@ public class MatchResult
 	 * @param _looser the looser of the game
 	 * @param board the final game board
 	 */
-	public MatchResult(Player p1, Player p2, Player _winner, Player _looser, boolean draw, char[][] board)
+	public MatchResult(Player p1, Player p2, Player _winner, Player _looser, boolean draw, Board board)
 	{
 		players = new Player[]
 		{
