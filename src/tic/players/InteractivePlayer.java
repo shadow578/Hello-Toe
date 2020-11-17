@@ -1,8 +1,8 @@
 package tic.players;
 
 import java.util.Random;
-import java.util.Scanner;
 
+import tic.App;
 import tic.tac.Player;
 import tic.tac.toe.Board;
 import tic.tac.toe.Position;
@@ -15,14 +15,19 @@ import tic.util.ConsoleUtil;
 public class InteractivePlayer extends Player
 {
 	/**
-	 * console input scanner
+	 * the name entered by the player
 	 */
-	Scanner in;
+	String name = "";
 
 	@Override
-	public void init()
+	public void init(char symbol)
 	{
-		in = new Scanner(System.in);
+		// ask for name
+		System.out.printf("Player [%c], please enter your name: ", symbol);
+		do
+		{
+			name = App.consoleIn.nextLine();
+		} while (name.isBlank() || name.isEmpty());
 	}
 
 	@Override
@@ -32,7 +37,7 @@ public class InteractivePlayer extends Player
 		ConsoleUtil.ClearConsole();
 
 		// write player names and symbol info
-		System.out.printf("%nYou are %s%nYour Opponent is %s%n%n", symbols.SELF, symbols.OPPONENT);
+		System.out.printf("%n%s's Turn%nYou play as %s%n%n", name, symbols.SELF);
 
 		// draw the board, but replace blanks with numbers
 		for (int x = 0; x < 3; x++)
@@ -66,7 +71,7 @@ public class InteractivePlayer extends Player
 		// get number to take from player
 		System.out.println();
 		System.out.print("Enter position to take: ");
-		int n = in.nextInt() - 1;
+		int n = App.consoleIn.nextInt() - 1;
 
 		// get x/y position from n
 		int y = n % 3;
@@ -78,7 +83,7 @@ public class InteractivePlayer extends Player
 	@Override
 	public String getDisplayName()
 	{
-		return "Interactive Player";
+		return name;
 	}
 
 }

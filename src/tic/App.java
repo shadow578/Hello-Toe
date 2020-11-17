@@ -1,5 +1,7 @@
 package tic;
 
+import java.util.Scanner;
+
 import tic.players.DummyBot;
 import tic.players.InteractivePlayer;
 import tic.players.MaxBot;
@@ -11,46 +13,50 @@ import tic.util.ConsoleUtil;
 public class App
 {
 	/**
+	 * global scanner for console input
+	 */
+	public static Scanner consoleIn;
+
+	/**
 	 * main entry point of the app
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args)
 	{
+		// create scanner for console
+		consoleIn = new Scanner(System.in);
+
 		// create new game and player instances
 		TicTacToeGame game = new TicTacToeGame();
 		InteractivePlayer player = new InteractivePlayer();
-		DummyBot dummy = new DummyBot();
-		MaxBot max = new MaxBot();
 
-		// player vs dummy
-		// match(game, player, dummy);
-
-		// player vs max
-		//match(game, player, max);
-
-		// dummy vs max
-		// match(game, dummy, max);
-		
-		// max vs max
-		MaxBot max2 = new MaxBot();
-		int winsMax1 = 0, winsMax2 = 0, draws = 0;
-		for (int i = 0; i < 1000; i++)
+		// choose a difficulty level
+		int difficultyChoice;
+		do
 		{
-			System.out.println(i);
-			MatchResult r = game.match(max, max2);
-			if (r.wasDraw)
-				draws++;
-			else if (r.winner.equals(max))
-				winsMax1++;
-			else
-				winsMax2++;
+			System.out.printf("choose a difficulty level:%n [1] Easy%n [2] Hard%n [3] Two- Player%n> ");
+			difficultyChoice = consoleIn.nextInt();
+		} while (difficultyChoice < 1 || difficultyChoice > 3);
+
+		// start the game with difficutlty
+		switch (difficultyChoice)
+		{
+		case 1:
+			// easy, DummyBot
+			match(game, player, new DummyBot());
+			break;
+		case 2:
+			// hard, MaxBot
+			match(game, player, new MaxBot());
+			break;
+		case 3:
+			// two- player
+			match(game, player, new InteractivePlayer());
+			break;
 		}
-		
-		System.out.printf("Max 1 won %d times%nMax 2 won %d times%n%d Ties%nWin Ratio %.2f (should close to 50%%)%n",
-				winsMax1,
-				winsMax2,
-				draws,
-				(double) winsMax1 / (double) winsMax2);
+
+		// close scanner
+		consoleIn.close();
 	}
 
 	/**
@@ -61,7 +67,6 @@ public class App
 	 */
 	private static void match(TicTacToeGame game, Player p1, Player p2)
 	{
-		System.out.printf("%s vs %s%n", p1.getDisplayName(), p2.getDisplayName());
 		MatchResult result = game.match(p1, p2);
 		printResult(result);
 	}

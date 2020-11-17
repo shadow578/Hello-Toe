@@ -42,8 +42,8 @@ public class TicTacToeGame
 			throw new IllegalArgumentException("players cannot be null!");
 
 		// ready player 1
-		player1.init();
-		player2.init();
+		player1.init(PLAYER1);
+		player2.init(PLAYER2);
 
 		// init and reset board
 		Board board = new Board(BLANK);

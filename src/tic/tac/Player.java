@@ -10,8 +10,9 @@ public abstract class Player
 {
 	/**
 	 * Initialize the player
+	 * @param symbol the symbol this player will use during the game
 	 */
-	public void init() {
+	public void init(char symbol) {
 	}
 	
 	/**
